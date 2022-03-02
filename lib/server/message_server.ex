@@ -1,4 +1,4 @@
-defmodule MessageServer do
+defmodule Mercury.Server.MessageServer do
   use GenServer
 
   def start_link(state) do

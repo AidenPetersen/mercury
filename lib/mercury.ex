@@ -1,18 +1,11 @@
-defmodule Mercury do
-  @moduledoc """
-  Documentation for `Mercury`.
-  """
+defmodule Mercury.Application do
+  use Application
 
-  @doc """
-  Hello world.
+  @impl true
+  def start(_type, _args) do
 
-  ## Examples
+    opts = [strategy: :one_for_one, name: Mercury.Server.MessageSupervisor]
+    DynamicSupervisor.start_link(opts)
 
-      iex> Mercury.hello()
-      :world
-
-  """
-  def hello do
-    :world
   end
 end
