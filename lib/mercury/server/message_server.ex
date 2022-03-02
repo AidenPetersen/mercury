@@ -8,8 +8,8 @@ defmodule Mercury.Server.MessageServer do
   ## Callbacks
 
   @impl true
-  def init(%{messages: ms, users: us}) do
-    {:ok, %{messages: ms, users: us}}
+  def init(%{messages: ms, users: us, name: n}) do
+    {:ok, %{messages: ms, users: us, name: n}}
   end
 
   @impl true
