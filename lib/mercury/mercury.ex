@@ -4,10 +4,10 @@ defmodule Mercury.Application do
   @impl true
   def start(_type, _args) do
     children = [
-      {Mercury.Server.MessageSupervisor, [strategy: :one_for_one]},
+      {Mercury.Server.MessageSupervisor, []},
     ]
 
-    opts = [strategy: :one_for_one, name: Mercury.Supervisor]
+    opts = [strategy: :one_for_one]
     Supervisor.start_link(children, opts)
   end
 end
