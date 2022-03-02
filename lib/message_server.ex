@@ -35,4 +35,10 @@ defmodule MessageServer do
     {:reply, ms, %{messages: ms, users: new_users}}
   end
 
+  @impl true
+  def handle_call(:users, _from, %{messages: ms, users: us}) do
+
+    {:reply, us, %{messages: ms, users: us}}
+  end
+
 end

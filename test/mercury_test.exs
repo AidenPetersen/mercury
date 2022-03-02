@@ -7,7 +7,7 @@ defmodule MercuryTest do
     # User 1
     Task.async(fn ->
       GenServer.call(pid, :join)
-      :timer.sleep(100)
+      :timer.sleep(1)
       GenServer.cast(pid, {:send, "Hello world!"})
     end)
     message_task = Task.async(fn ->
