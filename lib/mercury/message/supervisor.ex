@@ -1,4 +1,4 @@
-defmodule Mercury.Server.MessageSupervisor do
+defmodule Mercury.Message.Supervisor do
   use DynamicSupervisor
 
   def start_link(init_arg) do
@@ -7,7 +7,7 @@ defmodule Mercury.Server.MessageSupervisor do
 
   def start_child(name) do
     # TODO Query database for initial state of messages
-    server_state = {Mercury.Server.MessageServer, %{messages: [], users: [], name: name}}
+    server_state = {Mercury.Server.Server, %{messages: [], users: [], name: name}}
     DynamicSupervisor.start_child(__MODULE__, server_state)
   end
 

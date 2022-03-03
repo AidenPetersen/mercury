@@ -1,10 +1,9 @@
 defmodule Mercury.Server.ServerTest do
   use ExUnit.Case
-  alias Mercury.Server.MessageServer, as: MessageServer
-  alias Mercury.Server.MessageSupervisor, as: MessageSupervisor
+  alias Mercury.Message.Supervisor, as: MessageSupervisor
 
   test "test genserver" do
-    {:ok, pid} = MessageSupervisor.start_child("test")
+    {:ok, pid} = Mercury.MessageSupervisor.start_child("test")
 
     # User 1
     Task.async(fn ->

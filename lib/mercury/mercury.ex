@@ -4,7 +4,9 @@ defmodule Mercury.Application do
   @impl true
   def start(_type, _args) do
     children = [
-      {Mercury.Server.MessageSupervisor, []},
+      {Mercury.Message.Supervisor, name: Supervisors.Message},
+      {Mercury.Message.ServerMap, name: Supervisors.MessageMap},
+      {Mercury.TCPSupervisor, []},
     ]
 
     opts = [strategy: :one_for_one]
