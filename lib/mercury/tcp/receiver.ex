@@ -23,21 +23,23 @@ defmodule Mercury.TCP.Receiver do
   end
 
   # Handles sending messages
-  defp serve(socket, server) do
+  defp serve(socket, server_name) do
     case Utils.read_line(socket) do
       {:ok, message} ->
         cond do
           # Joining a server
           String.starts_with?(message, "join") ->
+            if server_name != :none do
+              Message.leave_server(server_name, socket)
+            end
             name = String.replace_prefix(message, "join", "") |> String.trim()
-
-            {new_server, messages} = Message.join_server(name, socket)
+            messages = Message.join_server(name, socket)
             Enum.each(messages, &Utils.write_line(&1, socket))
-            serve(socket, new_server)
+            serve(socket, name)
 
-          server == :none ->
+          server_name == :none ->
             Utils.write_line("Please join a server first.\n", socket)
-            serve(socket, server)
+            serve(socket, server_name)
 
           String.starts_with?(message, "send") ->
             message_trimmed =
@@ -45,18 +47,18 @@ defmodule Mercury.TCP.Receiver do
               |> String.replace_prefix("send", "")
               |> String.trim()
 
-            Message.send_message(server, message_trimmed)
-            serve(socket, server)
+            Message.send_message(server_name, message_trimmed)
+            serve(socket, server_name)
 
           true ->
-            serve(socket, server)
+            serve(socket, server_name)
         end
       {:error, :closed} ->
-        handle_close(socket, server)
+        handle_close(socket, server_name)
     end
   end
-  defp handle_close(socket, server) when server != :none do
-    _ = Message.leave_server(socket, server)
+  defp handle_close(socket, server_name) when server_name != :none do
+    _ = Message.leave_server(server_name, socket)
     :ok
   end
 

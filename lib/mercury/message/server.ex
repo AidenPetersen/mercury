@@ -22,21 +22,21 @@ defmodule Mercury.Message.Server do
   end
 
   @impl true
-  def handle_call({:join, user}, _from, %{messages: ms, users: us, name: n}) do
-    # Adds user to state
-    {:reply, ms, %{messages: ms, users: [user | us], name: n}}
-  end
-
-  @impl true
-  def handle_call({:leave, user}, _from, %{messages: ms, users: us, name: n}) do
+  def handle_cast({:leave, user}, %{messages: ms, users: us, name: n}) do
     # Removes user from state
     new_users = Enum.filter(us, fn u -> u != user end)
     {:noreply, %{messages: ms, users: new_users, name: n}}
   end
 
   @impl true
-  def handle_call(:users, _from, %{messages: ms, users: us, name: n}) do
+  def handle_call({:join, user}, _from, %{messages: ms, users: us, name: n}) do
+    # Adds user to state
+    {:reply, ms, %{messages: ms, users: [user | us], name: n}}
+  end
 
+
+  @impl true
+  def handle_call(:users, _from, %{messages: ms, users: us, name: n}) do
     {:reply, us, %{messages: ms, users: us, name: n}}
   end
 
@@ -46,8 +46,9 @@ defmodule Mercury.Message.Server do
   end
 
   @impl true
-  def terminate(_reason, _state) do
+  def terminate(_reason, state) do
     # TODO Save messages to database
+    IO.puts("#{state[:name]} stopped")
   end
 
 end

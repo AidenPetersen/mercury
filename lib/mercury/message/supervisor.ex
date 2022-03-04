@@ -5,6 +5,10 @@ defmodule Mercury.Message.Supervisor do
     DynamicSupervisor.start_link(__MODULE__, init_arg, name: __MODULE__)
   end
 
+  def terminate_child(pid) do
+    DynamicSupervisor.terminate_child(__MODULE__, pid)
+  end
+
   def start_child(name) do
     # TODO Query database for initial state of messages
     spec = {Mercury.Message.Server, %{messages: [], users: [], name: name}}
@@ -15,4 +19,4 @@ defmodule Mercury.Message.Supervisor do
   def init(_init_arg) do
     DynamicSupervisor.init(strategy: :one_for_one)
   end
-end
+ end

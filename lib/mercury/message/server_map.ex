@@ -13,30 +13,32 @@ defmodule Mercury.Message.ServerMap do
     {:ok, %{}}
   end
 
+
   @impl true
-  def handle_call({:join, name, user}, _from, state) do
-    IO.inspect(state)
-    if Map.has_key?(state, name) do
-      ms = GenServer.call(state[name], {:join, user})
-      {:reply, {state[name], ms}, state}
+  def handle_cast({:leave, name, user}, state) do
+    server = state[name]
+
+    _ = GenServer.cast(server, {:leave, user})
+    users = GenServer.call(server, :users)
+    num_users = length(users)
+    if num_users == 0 do
+      GenServer.stop(server)
+      Message.Supervisor.terminate_child(server)
+      {:noreply, Map.delete(state, name)}
     else
-      {:ok, pid} = Message.Supervisor.start_child(name) |> IO.inspect()
-      ms = GenServer.call(pid, {:join, user})
-      {:reply, {pid, ms}, Map.put(state, name, pid)}
+      {:noreply, state}
     end
   end
 
   @impl true
-  def handle_call({:leave, name, user}, _from, state) do
-    # FIXME
-    GenServer.call(Supervisor.Message, {:leave, user})
-    users = GenServer.call(Supervisor.Message, :users)
-    num_users = length(users)
-    if num_users == 0 do
-      GenServer.stop(state[name])
-      {:noreply, Map.delete(state, name)}
+  def handle_call({:join, name, user}, _from, state) do
+    if Map.has_key?(state, name) do
+      ms = GenServer.call(state[name], {:join, user})
+      {:reply, {state[name], ms}, state}
     else
-      {:noreply, state}
+      {:ok, pid} = Message.Supervisor.start_child(name)
+      ms = GenServer.call(pid, {:join, user})
+      {:reply, {pid, ms}, Map.put(state, name, pid)}
     end
   end
 
