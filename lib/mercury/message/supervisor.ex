@@ -8,7 +8,7 @@ defmodule Mercury.Message.Supervisor do
   def start_child(name) do
     # TODO Query database for initial state of messages
     spec = {Mercury.Message.Server, %{messages: [], users: [], name: name}}
-    DynamicSupervisor.start_child(__MODULE__, spec) |> IO.inspect()
+    DynamicSupervisor.start_child(__MODULE__, spec)
   end
 
   @impl true

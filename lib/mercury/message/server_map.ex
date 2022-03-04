@@ -1,5 +1,6 @@
 defmodule Mercury.Message.ServerMap do
   use GenServer
+  alias Mercury.Message
 
   def start_link(state) do
     GenServer.start_link(__MODULE__, state, name: __MODULE__)
@@ -8,17 +9,18 @@ defmodule Mercury.Message.ServerMap do
   ## Callbacks
 
   @impl true
-  def init(init_state) do
-    {:ok, init_state}
+  def init(_) do
+    {:ok, %{}}
   end
 
   @impl true
   def handle_call({:join, name, user}, _from, state) do
+    IO.inspect(state)
     if Map.has_key?(state, name) do
       ms = GenServer.call(state[name], {:join, user})
       {:reply, {state[name], ms}, state}
     else
-      {:ok, pid} = Mercury.Message.Supervisor.start_child(name)
+      {:ok, pid} = Message.Supervisor.start_child(name) |> IO.inspect()
       ms = GenServer.call(pid, {:join, user})
       {:reply, {pid, ms}, Map.put(state, name, pid)}
     end
@@ -26,8 +28,8 @@ defmodule Mercury.Message.ServerMap do
 
   @impl true
   def handle_call({:leave, name, user}, _from, state) do
-    GenServer.call(Supervisor.Message, {:join, user})
-    GenServer.call(Supervisor.Message, :leave)
+    # FIXME
+    GenServer.call(Supervisor.Message, {:leave, user})
     users = GenServer.call(Supervisor.Message, :users)
     num_users = length(users)
     if num_users == 0 do

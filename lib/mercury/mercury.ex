@@ -5,7 +5,7 @@ defmodule Mercury.Application do
   def start(_type, _args) do
     children = [
       Mercury.Message.Supervisor,
-      {Mercury.Message.ServerMap, %{}},
+      Mercury.Message.ServerMap,
       Mercury.TCP.Supervisor,
     ]
 
