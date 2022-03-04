@@ -1,5 +1,5 @@
 defmodule Mercury.Message.Server do
-  use GenServer
+  use GenServer, restart: :temporary
 
   def start_link(state) do
     GenServer.start_link(__MODULE__, state, name: {:global, "MessageServer:#{state.name}"})
@@ -49,6 +49,7 @@ defmodule Mercury.Message.Server do
   def terminate(_reason, state) do
     # TODO Save messages to database
     IO.puts("#{state[:name]} stopped")
+    :normal
   end
 
 end

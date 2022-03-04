@@ -1,8 +1,8 @@
 defmodule Mercury.Message.Supervisor do
   use DynamicSupervisor
 
-  def start_link(init_arg) do
-    DynamicSupervisor.start_link(__MODULE__, init_arg, name: __MODULE__)
+  def start_link(init_args) do
+    DynamicSupervisor.start_link(__MODULE__, init_args, name: __MODULE__)
   end
 
   def terminate_child(pid) do
