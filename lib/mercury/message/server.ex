@@ -1,4 +1,4 @@
-defmodule Mercury.Server.Server do
+defmodule Mercury.Message.Server do
   use GenServer
 
   def start_link(state) do
@@ -15,24 +15,23 @@ defmodule Mercury.Server.Server do
   @impl true
   def handle_cast({:send, m}, %{messages: ms, users: us, name: n}) do
     # Sends the message to each client
-    Enum.each(us, fn u -> send(u, {:message, m}) end)
+    Enum.each(us, fn u -> Mercury.TCP.Utils.write_line(m, u) end)
 
     # Adds new message to state.
     {:noreply, %{messages: [m | ms], users: us, name: n}}
   end
 
   @impl true
-  def handle_call(:join, {pid, _info}, %{messages: ms, users: us, name: n}) do
+  def handle_call({:join, user}, _from, %{messages: ms, users: us, name: n}) do
     # Adds user to state
-    {:reply, ms, %{messages: ms, users: [pid | us], name: n}}
+    {:reply, ms, %{messages: ms, users: [user | us], name: n}}
   end
 
   @impl true
-  def handle_call(:leave, from, %{messages: ms, users: us, name: n}) do
-
+  def handle_call({:leave, user}, _from, %{messages: ms, users: us, name: n}) do
     # Removes user from state
-    new_users = Enum.filter(us, fn u -> u.pid != from.pid end)
-    {:reply, ms, %{messages: ms, users: new_users, name: n}}
+    new_users = Enum.filter(us, fn u -> u != user end)
+    {:noreply, %{messages: ms, users: new_users, name: n}}
   end
 
   @impl true
@@ -44,6 +43,11 @@ defmodule Mercury.Server.Server do
   @impl true
   def handle_call(:name, _from, %{messages: ms, users: us, name: n}) do
     {:reply, n, %{messages: ms, users: us, name: n}}
+  end
+
+  @impl true
+  def terminate(_reason, _state) do
+    # TODO Save messages to database
   end
 
 end
