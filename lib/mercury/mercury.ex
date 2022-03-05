@@ -3,6 +3,7 @@ defmodule Mercury.Application do
 
   @impl true
   def start(_type, _args) do
+
     children = [
       Mercury.Message.Supervisor,
       Mercury.Message.ServerMap,
