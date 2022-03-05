@@ -23,8 +23,7 @@ defmodule Mercury.Message.ServerMap do
     num_users = length(users)
     if num_users == 0 do
       GenServer.stop(server)
-      # Message.Supervisor.terminate_child(server)
-      {:noreply, Map.delete(state, name)
+      {:noreply, Map.delete(state, name)}
     else
       {:noreply, state}
     end
