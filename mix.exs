@@ -22,7 +22,9 @@ defmodule Mercury.MixProject do
   # Run "mix help deps" to learn about dependencies.
   defp deps do
     [
-      {:libcluster, "~> MAJ.MIN"}
+      {:libcluster, "~> 3.3"},
+      {:ecto_sql, "~> 3.7"},
+      {:postgrex, ">= 0.0.0"}
     ]
   end
 end

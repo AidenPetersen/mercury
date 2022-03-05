@@ -1,5 +1,22 @@
 import Config
 
+config :mercury, Mercury.Repo,
+  database: "mercury_repo",
+  username: "user",
+  password: "pass",
+  hostname: "localhost"
+
+config :mercury, ecto_repos: [Mercury.Repo]
+
+config :mercury, Mercury.Repo,
+  database: "mercury",
+  username: "mercury",
+  password: "mercury",
+  hostname: "localhost",
+  port: "5432"
+
+
+
 config :libcluster,
   topologies: [
     example: [

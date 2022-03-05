@@ -24,3 +24,9 @@ mercury-*.tar
 
 # Temporary files, for example, from tests.
 /tmp/
+
+# Mnesia db stuff
+/.mnesia/
+
+# jetbrains
+/.idea/
