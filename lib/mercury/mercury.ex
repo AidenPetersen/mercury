@@ -8,6 +8,7 @@ defmodule Mercury.Application do
       Mercury.Message.Supervisor,
       Mercury.Message.ServerMap,
       Mercury.TCP.Supervisor,
+      Mercury.Repo,
     ]
 
     opts = [strategy: :one_for_one, name: Mercury.Supervisor]
